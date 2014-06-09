@@ -1,0 +1,9 @@
+from django.db import models
+
+from mongoengine import *
+from mongoengine import Document
+
+class tweet(Document):
+	id = StringField(primary_key=true)
+	name = StringField()
+	text = StringField()

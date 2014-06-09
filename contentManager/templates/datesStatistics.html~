@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+
+{% block stats %}
+<div class="tab-pane" id="statistics/streaming">
+</div>
+<div class="tab-pane" id="statistics/rt">
+</div>
+<div class="tab-pane"" id="statistics/user">
+</div>
+<div class="tab-pane" id="statistics/popular">
+</div>
+<div class="tab-pane" id="statistics/ht">
+</div>
+<div class="tab-pane active" id="#statistics/dates">
+  <div class="span9">
+	<div class="row-fluid">
+       <div class="span6">
+			<div id="graphics" style="overflow:hidden;position:relative;width:600px;height:1200px;"></div>
+        </div><!--/span-->
+       <div class="span6">
+			<h3>Número de tweets en los últimos días</h3>
+			{% for i in mes %}
+        	<h6>{{i.date}}</h6>
+			<br>
+			{% endfor %}
+      	</div><!--/span-->
+     </div class="row-fluid">
+  </div><!--/span9-->
+</div>
+<div class="tab-pane" id="statistics/year">
+</div>
+
+
+
+
+
+<script type="text/JavaScript">
+
+	//Define graphics
+	var graphicsDiv=document.getElementById("graphics");
+	var gr = new jxGraphics(graphicsDiv);
+
+	//Define pen and drawing brushes
+	var penBlue = new jxPen(new jxColor('#77B7E1'), 1);
+
+	var brushBlue = new jxBrush(new jxColor('#FFFFFF'));
+	brushBlue.fillType = 'lin-grad';
+	brushBlue.angle = 65;
+	brushBlue.color2 = new jxColor('#2880B8');
+
+	var brushText = new jxBrush(new jxColor('#054B78'));
+
+	var brushRight = new jxBrush(new jxColor('#2880B8'));
+	brushRight.color2 = new jxColor('#0C5D91');
+	brushRight.fillType = 'lin-grad';
+	brushRight.angle = 90;
+
+	var shadowBrush = new jxBrush(new jxColor('#A0A0A0'));
+	shadowBrush.fillType = 'lin-grad';
+
+	//Define text font
+	var font = new jxFont();
+	font.size = 12;
+	font.weight = 'bold';
+
+	mesScript = {{mesArray}};
+
+	//Create Bar3D objects
+	//eje x y altura
+	for (var k = 0; k < 10; k++){
+		if (mesScript[k] == null) 
+			mesScript[k] = 0;
+	}
+	var b1 = new Bar3D(20, mesScript[0],5);
+	var b2 = new Bar3D(50, mesScript[1],5);
+	var b3 = new Bar3D(80, mesScript[2],5);
+	var b4 = new Bar3D(110, mesScript[3],5);
+	var b5 = new Bar3D(140, mesScript[4],5);
+	var b6 = new Bar3D(170, mesScript[5],5);
+	var b7 = new Bar3D(200, mesScript[6],5);
+	var b8 = new Bar3D(230, mesScript[7],5);
+	var b9 = new Bar3D(260, mesScript[8],5);
+	var b10 = new Bar3D(290, mesScript[9],5);
+
+
+	//Draw and animate Bar3D objects
+	b1.animate();
+	b2.animate();
+	b3.animate();
+	b4.animate();
+	b5.animate();
+	b6.animate();
+	b7.animate();
+	b8.animate();
+	b9.animate();
+	b10.animate();
+
+	//Define Bar3D class to hold 3D bar information and drawing methods
+	function Bar3D(x, y,comprension) {
+    	//Define drawing objects like polygons, font, texts etc.
+    	var rectFront = new jxRect(), polyRight = new jxPolygon(), polyTop = new jxPolygon(), polyShadow = new jxPolygon();
+    	var xText = new jxText(), yText = new jxText();
+    
+		y = y/comprension;
+    	var step, ys, intId;
+    	step = y / 30;
+    	ys = step;
+    
+    	//Assign static(not to chnage while animating) properties to the drawing objects
+    	rectFront.pen = penBlue;
+    	rectFront.brush = brushBlue;
+    	polyRight.pen = penBlue;
+    	polyRight.brush = brushRight;
+    	polyTop.pen = penBlue;
+    	polyTop.brush = brushBlue;
+    	polyShadow.brush = shadowBrush;
+
+    	//yText.text = y;
+    	//yText.font = font;
+    	//yText.brush = brushText;
+
+    	xText.text = y*comprension;
+    	xText.font = font;
+    	xText.brush = brushText;
+    	xText.point = new jxPoint(70 + x, 330);
+    	xText.angle = 270;
+
+    	//Method to draw 3D bar
+    	this.drawStep = function() {
+        	//Assign dynamic(to be changed for animation) properties to the animation
+        	rectFront.point = new jxPoint(50 + x, 350 - ys);
+        	rectFront.width = 30;
+        	rectFront.height = ys;
+
+        	polyRight.points = [new jxPoint(80 + x, 350 - ys), new jxPoint(100 + x, 330 - ys), new jxPoint(100 + x, 330), new jxPoint(80+ x, 350)];
+        	polyTop.points = [new jxPoint(50 + x, 350 - ys), new jxPoint(70 + x, 330 - ys), new jxPoint(100 + x, 330 - ys), new jxPoint(80 + x, 350 - ys)];
+        	polyShadow.points = [new jxPoint(50 + x, 350), new jxPoint(70 + x + ys / 3, 330 - ys / 5), new jxPoint(100 + x + ys / 3, 330 - ys / 5), new jxPoint(80 + x, 350)];
+        	yText.point = new jxPoint(60 + x, 325 - ys);
+
+        	polyShadow.draw(gr);
+        	rectFront.draw(gr);
+        	polyRight.draw(gr);
+        	polyTop.draw(gr);
+        	//yText.draw(gr);
+
+        	ys += step;
+        	if (ys > y) {
+            	clearInterval(intId);
+            	xText.draw(gr);
+        	}
+    	}
+
+    	//Call bar drawing method at intervals to have animation effect
+    	this.animate = function() {
+        	intId = setInterval(this.drawStep, 50);
+		}
+
+		//Create jxColor object
+    	var col = new jxColor("red");
+
+    	//Create jxPen object
+    	var pen = new jxPen(col,'2px');
+		
+		mesScriptRT = {{mesArrayRT}}
+		//Create jxPoint
+		for (var k = 0; k < 10; k++){
+			if (mesScriptRT[k] == null) 
+				mesScriptRT[k] = 0;
+		}
+		var pt1 = new jxPoint(20 + 50 + 15,350 - mesScriptRT[0]/5);
+    	var pt2 = new jxPoint(50 + 50 + 15,350 - mesScriptRT[1]/5);
+		var pt3 = new jxPoint(80 + 50 + 15,350 - mesScriptRT[2]/5);
+    	var pt4 = new jxPoint(110 + 50 + 15,350 - mesScriptRT[3]/5);
+		var pt5 = new jxPoint(140 + 50 + 15,350 - mesScriptRT[4]/5);
+    	var pt6 = new jxPoint(170 + 50 + 15,350 - mesScriptRT[5]/5);
+		var pt7 = new jxPoint(200 + 50 + 15,350 - mesScriptRT[6]/5);
+    	var pt8 = new jxPoint(230 + 50 + 15,350 - mesScriptRT[7]/5);
+		var pt9 = new jxPoint(260 + 50 + 15,350 - mesScriptRT[8]/5);
+    	var pt10 = new jxPoint(290 + 50 + 15,350 - mesScriptRT[9]/5);
+
+		//Create the lines
+		var line1 = new jxLine(pt1,pt2,pen);
+		var line2 = new jxLine(pt2,pt3,pen);
+		var line3 = new jxLine(pt3,pt4,pen);
+		var line4 = new jxLine(pt4,pt5,pen);
+		var line5 = new jxLine(pt5,pt6,pen);
+		var line6 = new jxLine(pt6,pt7,pen);
+		var line7 = new jxLine(pt7,pt8,pen);
+		var line8 = new jxLine(pt8,pt9,pen);
+		var line9 = new jxLine(pt9,pt10,pen);
+
+		// Draw the line on the graphics
+		setTimeout(function(){
+		line1.draw(gr);
+		line2.draw(gr); 
+		line3.draw(gr); 
+		line4.draw(gr); 
+		line5.draw(gr); 
+		line6.draw(gr); 
+		line7.draw(gr); 
+		line8.draw(gr); 
+		line9.draw(gr);},1000);
+
+		// Leyend
+		line = new jxLine (new jxPoint (130 +50+15,400),new jxPoint (170 +50+15,400),pen);
+		line.draw(gr);
+		var penBlack = new jxPen(new jxColor('black'));
+		var text1 = new jxText(new jxPoint(170+50+30, 400+5), 'RT', font, penBlack);
+    	text1.draw(gr);
+	}
+</script> 
+
+
+{% endblock %}

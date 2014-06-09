@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block stats %}
+
+
+<div class="tab-pane" id="statistics/streaming">
+</div>
+<div class="tab-pane active" id="statistics/rt">
+<div class="span9">
+	<div class="row-fluid">
+		<div class="span6">
+			<div id="graphics" style="overflow:hidden;position:relative;width:600px;height:600px;"></div> 
+        </div><!--/span-->
+		<div class="span6">
+			<h3>Retweets</h3>
+			{% for i in rts %}
+        	<h6>{{i.text}}</h6>
+			<br>
+			{% endfor %}
+      	</div><!--/span-->
+    </div>
+
+</div>
+<div class="tab-pane" id="statistics/user">
+</div>
+<div class="tab-pane" id="statistics/popular">
+</div>
+<div class="tab-pane" id="statistics/ht">
+</div>
+<div class="tab-pane" id="statistics/dates">
+</div>
+<div class="tab-pane" id="statistics/year">
+</div>
+
+
+
+
+
+
+<script type="text/JavaScript">
+
+	//Define graphics
+	var graphicsDiv=document.getElementById("graphics");
+	var gr = new jxGraphics(graphicsDiv);
+
+	//Define pen and drawing brushes
+	var penBlue = new jxPen(new jxColor('#77B7E1'), 1);
+
+	var brushBlue = new jxBrush(new jxColor('#FFFFFF'));
+	brushBlue.fillType = 'lin-grad';
+	brushBlue.angle = 65;
+	brushBlue.color2 = new jxColor('#2880B8');
+
+	var brushText = new jxBrush(new jxColor('#054B78'));
+
+	var brushRight = new jxBrush(new jxColor('#2880B8'));
+	brushRight.color2 = new jxColor('#0C5D91');
+	brushRight.fillType = 'lin-grad';
+	brushRight.angle = 90;
+
+	var shadowBrush = new jxBrush(new jxColor('#A0A0A0'));
+	shadowBrush.fillType = 'lin-grad';
+
+	//Define text font
+	var font = new jxFont();
+	font.size = 12;
+	font.weight = 'bold';
+
+	rtsScript = {{rtArray}};
+
+	//Create Bar3D objects
+	//eje x y altura
+	var b1 = new Bar3D(20, rtsScript[0]);
+	var b2 = new Bar3D(50, rtsScript[1]);
+	var b3 = new Bar3D(80, rtsScript[2]);
+	var b4 = new Bar3D(110, rtsScript[3]);
+	var b5 = new Bar3D(140, rtsScript[4]);
+	var b6 = new Bar3D(170, rtsScript[5]);
+	var b7 = new Bar3D(200, rtsScript[6]);
+	var b8 = new Bar3D(230, rtsScript[7]);
+	var b9 = new Bar3D(260, rtsScript[8]);
+	var b10 = new Bar3D(290, rtsScript[9]);
+
+
+	//Draw and animate Bar3D objects
+	b1.animate();
+	b2.animate();
+	b3.animate();
+	b4.animate();
+	b5.animate();
+	b6.animate();
+	b7.animate();
+	b8.animate();
+	b9.animate();
+	b10.animate();
+
+	//Define Bar3D class to hold 3D bar information and drawing methods
+	function Bar3D(x, y) {
+    	//Define drawing objects like polygons, font, texts etc.
+    	var rectFront = new jxRect(), polyRight = new jxPolygon(), polyTop = new jxPolygon(), polyShadow = new jxPolygon();
+    	var xText = new jxText(), yText = new jxText();
+    
+    	var step, ys, intId;
+    	step = y / 30;
+    	ys = step;
+    
+    	//Assign static(not to chnage while animating) properties to the drawing objects
+    	rectFront.pen = penBlue;
+    	rectFront.brush = brushBlue;
+    	polyRight.pen = penBlue;
+    	polyRight.brush = brushRight;
+    	polyTop.pen = penBlue;
+    	polyTop.brush = brushBlue;
+    	polyShadow.brush = shadowBrush;
+
+    	yText.text = y;
+    	yText.font = font;
+    	yText.brush = brushText;
+
+    	//xText.text = 'hola';
+    	xText.font = font;
+    	xText.brush = brushText;
+    	xText.point = new jxPoint(70 + x, 330);
+    	xText.angle = 270;
+
+    	//Method to draw 3D bar
+    	this.drawStep = function() {
+        	//Assign dynamic(to be changed for animation) properties to the animation
+        	rectFront.point = new jxPoint(50 + x, 350 - ys);
+        	rectFront.width = 30;
+        	rectFront.height = ys;
+
+        	polyRight.points = [new jxPoint(80 + x, 350 - ys), new jxPoint(100 + x, 330 - ys), new jxPoint(100 + x, 330), new jxPoint(80+ x, 350)];
+        	polyTop.points = [new jxPoint(50 + x, 350 - ys), new jxPoint(70 + x, 330 - ys), new jxPoint(100 + x, 330 - ys), new jxPoint(80 + x, 350 - ys)];
+        	polyShadow.points = [new jxPoint(50 + x, 350), new jxPoint(70 + x + ys / 3, 330 - ys / 5), new jxPoint(100 + x + ys / 3, 330 - ys / 5), new jxPoint(80 + x, 350)];
+        	yText.point = new jxPoint(60 + x, 325 - ys);
+
+        	polyShadow.draw(gr);
+        	rectFront.draw(gr);
+        	polyRight.draw(gr);
+        	polyTop.draw(gr);
+        	yText.draw(gr);
+
+        	ys += step;
+        	if (ys > y) {
+            	clearInterval(intId);
+            	xText.draw(gr);
+        	}
+    	}
+
+    	//Call bar drawing method at intervals to have animation effect
+    	this.animate = function() {
+        	intId = setInterval(this.drawStep, 50);
+    	}
+	}
+</script> 
+
+{% endblock %}

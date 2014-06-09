@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block stats1 %}
+  
+{% for i in statuses %}
+  <div class="span9">
+	<a href="https://twitter.com/{{i.user.screen_name}}">{{i.user.screen_name}}</a>
+	<p>{{i.text}}</p>
+	<p>{{i.created_at}}</p>
+  </div><!--/span9-->
+{% endfor %}
+
+
+{% endblock %}

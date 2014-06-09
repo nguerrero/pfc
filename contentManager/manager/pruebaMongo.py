@@ -1,0 +1,69 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Bibliografia mongo db
+# http://blog.manuelviera.es/2013/02/empezando-con-mongodb/
+# http://api.mongodb.org/python/current/api/index.html
+# http://docs.mongodb.org/
+# http://mongoengine.org/
+
+# Python
+# http://docs.python.org
+
+# 21 Recipes
+# https://github.com/ptwobrussell/Recipes-for-Mining-Twitter
+
+# Twitter
+# https://dev.twitter.com
+
+
+
+import sys
+import os
+import webbrowser
+from pymongo import MongoClient
+import twitter
+
+access_token ="1205614682-ZKyLfynUuaMXqwrjlz3z8btO3YbkS8CMusEv1Tf"
+access_token_secret = "WYYDpQqiEwK92Hh3PI7ZGJan1hWldYckXYfX2PDeQ"
+consumer_key ="BIYC56i5GKzCyTYlgur9YA"
+consumer_secret="1TPGvGaFfJl6bHSVOKBZpAJm1koNrLjeX0iUOMmE"
+#ip = '193.147.53.153'
+ip = 'localhost'
+port = 6000
+
+#Programa principal
+
+#Autenticarse en twitter
+auth = twitter.oauth.OAuth(access_token, access_token_secret,consumer_key, consumer_secret)
+api = twitter.Twitter(domain='api.twitter.com',api_version='1.1',auth=auth)
+print 'Autenticado'
+
+#Poner a escuchar en twitter
+twitter_stream = twitter.TwitterStream(auth=api.auth)
+stream = twitter_stream.statuses.filter(track = 'urjc')
+print 'Escuchando...'
+for tweet in stream:
+	print 'Llega tweet'
+	#Código de mongodb
+	client = MongoClient(ip, port)
+	db = client['twitterdata']
+	tweetCollection = db['tweets']
+	print 'Conectado con la bbdd...'
+	#tweetCollection.insert(tweet)
+	print 'Dentro tweet'
+	client.close()
+	print tweet
+
+
+#Nunca va a pasar de aquí
+for t in collection.find():
+	print t
+
+print 'Ahora borro la coleccion'
+db.drop_collection(collection)
+for t in collection.find():
+	print t
+
+
+

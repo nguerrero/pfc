@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block stats %}
+
+    <div class="hero-unit">
+      
+      <!-- Title -->
+      <h1>Elija una opción</h1>
+      
+      <hr>
+
+      <!-- Description -->
+      <p align="justify"> nanananananana</p>
+			
+    </div><!-- hero-unit -->
+
+{% endblock %}

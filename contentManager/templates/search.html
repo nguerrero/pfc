@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block stats %}
+ 
+<div class="tab-pane active" id="statistics/streaming">
+{% for i in statuses %}
+  <div class="span9">
+	<a href="https://twitter.com/{{i.user.screen_name}}">{{i.user.screen_name}}</a>
+	<p>{{i.text}}</p>
+	<p>{{i.created_at}}</p>
+  </div><!--/span9-->
+{% endfor %}
+</div>
+<div class="tab-pane" id="statistics/rt">
+</div>
+<div class="tab-pane"" id="statistics/user">
+</div>
+<div class="tab-pane" id="statistics/popular">
+</div>
+<div class="tab-pane" id="statistics/ht">
+</div>
+<div class="tab-pane" id="#statistics/dates">
+</div>
+<div class="tab-pane" id="statistics/year">
+</div>
+
+{% endblock %}
