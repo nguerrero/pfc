@@ -9,21 +9,18 @@ import twitter
 import json
 import sys
 from urllib2 import URLError
+import contrasenas
 #pymongo
 #mongoengine
 #api twitter
 
 
 #Programa principal
-access_token ="1205614682-ZKyLfynUuaMXqwrjlz3z8btO3YbkS8CMusEv1Tf"
-access_token_secret = "WYYDpQqiEwK92Hh3PI7ZGJan1hWldYckXYfX2PDeQ"
-consumer_key ="BIYC56i5GKzCyTYlgur9YA"
-consumer_secret="1TPGvGaFfJl6bHSVOKBZpAJm1koNrLjeX0iUOMmE"
 ip = 'localhost'
 port = 6000
 
 # Me registro en twitter
-auth = twitter.oauth.OAuth(access_token, access_token_secret,consumer_key, consumer_secret)
+auth = twitter.oauth.OAuth(contrasenas.access_token, contrasenas.access_token_secret,contrasenas.consumer_key, contrasenas.consumer_secret)
 api = twitter.Twitter(domain='api.twitter.com',api_version='1.1',auth=auth)
 
 # Pongo el streaming
